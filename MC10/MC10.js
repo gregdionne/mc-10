@@ -2711,6 +2711,18 @@ MC10.MC6847.prototype = {
         this.ctx.putImageData(this.imageData, 0, 0);
     },
 
+    getPaletteHexColor: function (color) {
+        var r = MC10.MC6847.Palette[color][0];
+        var g = MC10.MC6847.Palette[color][1];
+        var b = MC10.MC6847.Palette[color][2];
+        var value = 1<<24 | r<<16 | g<<8 | b;
+        return '#' + value.toString(16).substring(1);
+    },
+
+    setBorderColor: function (color) {
+        this.screen.style.borderColor = this.getPaletteHexColor(color);
+    },
+
     updateDisplay: function (pos, val) {
         // graphics modes
         // 8    64x64x4 (CG1)
@@ -2764,6 +2776,8 @@ MC10.MC6847.prototype = {
                 }
             }
         }
+
+        this.setBorderColor(bgColor);
     },
 
     updateColorGraphics: function (pos, val) {
@@ -2798,6 +2812,8 @@ MC10.MC6847.prototype = {
                 }
             }
         }
+
+        this.setBorderColor(altcolor);
     },
 
     updateSemiGraphics: function (pos, val) {
@@ -2861,6 +2877,8 @@ MC10.MC6847.prototype = {
             screenX -= 16;
             screenY += 2;
         }
+
+        this.setBorderColor(8); // black
     },
 
     processAudio: function (e) {
