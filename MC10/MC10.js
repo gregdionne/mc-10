@@ -125,7 +125,6 @@ MC10.prototype = {
             this.cycleInterval = setInterval(function () {
                 this.frame();
             }.bind(this), this.frameTime);
-            // this.debugger.value = "running...";
         }
     },
 
@@ -224,9 +223,6 @@ MC10.MC6803 = function (mc10) {
     this.REG_SP = null; // Stack pointer
     this.REG_IP = null; // INDEX pointer
     this.REG_PC = null; // Program counter
-
-    //this.clearTOF = false;
-    //this.clearOCF = false;
 
     this.init();
 };
@@ -1530,19 +1526,9 @@ MC10.MC6803.prototype = {
         this.REG_PC = ((this.fetchMemory(0xfffa) << 8) |
                        (this.fetchMemory(0xfffb) & 0xff)) & 0xffff;
         this.REG_PC &= 0xffff;
-
-        //                    return;
-        //                    this.F_INTERRUPT = 1;
-        //                    this.pushStack16(this.REG_PC);
-        //                    this.pushStack16(this.REG_IP);
-        //                    this.pushStack16(this.REG_A[0]);
-        //                    this.pushStack16(this.REG_B[0]);
-        //                    this.pushStack16(this.flagsToVariable());
-        //                    this.REG_PC = (this.fetchMemory(0xfffa) << 8) + this.fetchMemory(0xfffb);
     },
     SEXA: function () { // undocumented
         this.REG_A[0] = this.F_CARRY ? 255 : 0;
-        // registers unaffected
     },
     TAB: function () {
         this.REG_B[0] = this.REG_A[0];
@@ -1551,8 +1537,6 @@ MC10.MC6803.prototype = {
     },
     TAP: function () {
         this.variableToFlags(this.REG_A[0]);
-        //this.emulate();
-        //this.checkIRQLines();
     },
     TBA: function () {
         this.REG_A[0] = this.REG_B[0];
@@ -1605,7 +1589,6 @@ MC10.MC6803.prototype = {
         this.pushStack(this.REG_A[0]);
         this.pushStack(this.REG_B[0]);
         this.pushStack(this.flagsToVariable());
-        //this.checkIRQLines();
 
         if ((this.waiState & this.WAI_) != 0) {
             console.debug("eat cycles");
@@ -1722,8 +1705,6 @@ MC10.MC6803.prototype = {
                     return this.memory[address];
 
                 case 0x08: //Timer Control and Status Register (TCSR)
-                    //this.clearTOF = this.memory[0x08] & this.TCSR_TOF;
-                    //this.clearOCF = this.memory[0x08] & this.TCSR_OCF;
                     this.pendingTCSR = 0;
                     return this.memory[address];
 
@@ -1742,12 +1723,6 @@ MC10.MC6803.prototype = {
                         this.memory[0x08] &= ~(this.TCSR_OCF); // clear OCF flag on read
                         this.modifiedTCSR();
                     }
-                    //return (this.cycleCount >> 8) & 0xff;
-                    //if (this.pendingTCSR & this.TCSR_OCF) {
-                    //    this.memory[0x08] &= ~(this.TCSR_OCF); // clear OCF flag on read
-                    //    this.modifiedTCSR();
-                    //}
-                    //return this.cycleCount & 0xff;
                     return this.memory[address];
 
                 case 0x0d: //Input Capture Register (High byte)
@@ -1777,7 +1752,6 @@ MC10.MC6803.prototype = {
 
                 default:
                     console.debug("FATAL: Attempted to read to reserved internal register area:" + address);
-                    //           printf("(%x) Attempted to read to reserved internal register area %x.\n",optable[0x00]->Program_Counter-1,address);
                     return 0x00;
             }
         }
@@ -1835,7 +1809,6 @@ MC10.MC6803.prototype = {
                 console.debug("Invalid mode in fetchData16");
                 return 0;
         }
-        //return ((this.fetchMemory(scratch) << 8) + this.fetchMemory(scratch + 1)) & 0xffff;
         return ((this.fetchMemory(scratch) << 8) + this.fetchMemory(scratch + 1));
     },
 
@@ -1860,7 +1833,6 @@ MC10.MC6803.prototype = {
         }
 
         //is it writable ram?
-        //!!!!!!!!!!!!!! < or <= 0x8fff
         if (((address >= 0x0080) && (address < 0x0100)) || ((address >= 0x4200) && (address <= this.mc10.maxRam))) {
             this.memory[address] = value;
             return;
@@ -2478,7 +2450,7 @@ MC10.MC6847.SG6Rectangle = [
 
 MC10.MC6847.SG4CharacterSet = [
     //@
-    [0x00, 0x00, 0x00, 0x1c, 0x22, 0x02, 0x12, 0x2a, 0x2a, 0x1e, 0x00, 0x00],
+    [0x00, 0x00, 0x00, 0x1c, 0x22, 0x02, 0x1a, 0x2a, 0x2a, 0x1c, 0x00, 0x00],
     //A
     [0x00, 0x00, 0x00, 0x08, 0x14, 0x22, 0x22, 0x3e, 0x22, 0x22, 0x00, 0x00],
     //B
